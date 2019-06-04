@@ -1,43 +1,24 @@
 const express = require("express");
+const path = require("path");
+const logger = require("./src/utilities/middleware/logger");
 
+//Init express:
 const app = express();
 
-var properties = new Array();
+//Middleware:
+app.use(logger);
 
 //Body Parser Middlware:
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// this is our server application
-app.get("/", (req, res) => {
-    console.log(req.headers);
-    res.send("<p>Hello</p>");
-});
+//Routes:
+app.use("/api/users", require("./src/api/users-routes"));
+app.use("/api/auth", require("./src/api/auth-routes"));
 
-app.get("/properties", (req, res) => {
-    // var properties = new Array();
-    // properties.push({
-    //     id: 1,
-    //     name: "One",
-    //     location: "Lisbon"
-    // });
-    res.json(properties);
-});
+//Port:
+const PORT = process.env.PORT || 5000;
 
-app.post("/properties", (req, res) => {
-    const property = req.body;
-    properties.push(property);
-    res.json(property);
-});
-
-app.listen(3000, (err) => {
-    if (err) {
-        console.log("Sheeeesh");
-        return;
-    }
-
-    console.log("Sever listening port 3000");
-});
-
-console.log("This app runs! Woohoo!");
+//Listen:
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
